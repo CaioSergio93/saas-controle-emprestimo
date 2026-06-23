@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-_t8e=#pj^@bfi^5e^l7s&li5gnevrts!+h=a-ke&n1o6adk2c5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['100.110.227.49', 'caio-servidor']
+ALLOWED_HOSTS = ['saas-controle-emprestimo.onrender.com']
 
 
 # Application definition
@@ -107,6 +107,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
