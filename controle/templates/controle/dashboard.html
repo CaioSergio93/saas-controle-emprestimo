@@ -19,7 +19,12 @@
                     <p class="text-sm font-semibold">{{ request.user.username }}</p>
                     <p class="text-xs text-slate-400">Cliente SaaS</p>
                 </div>
-                <a href="/admin/logout/" class="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition">Sair</a>
+                <form action="/admin/logout/" method="post" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition">
+        Sair
+    </button>
+</form>
             </div>
         </div>
     </nav>
@@ -62,6 +67,7 @@
                             <th class="p-4">Valor Faltante</th>
                             <th class="p-4">Progresso Parcelas</th>
                             <th class="p-4 text-center">Status</th>
+                            <th class="p-4 text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-800/60 text-sm text-slate-300">
@@ -81,16 +87,29 @@
                                 </div>
                             </td>
                             <td class="p-4 text-center">
-                                {% if emp.parcelas_faltantes <= 0 %}
+                                {% if emp.status == 'Quitado' or emp.parcelas_pagas >= emp.parcelas_totais %}
                                     <span class="inline-flex rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20">✅ Quitado</span>
                                 {% else %}
-                                    <span class="inline-flex rounded-full bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-400 border border-amber-500/20">⏳ Aberto</span>
+                                    <span class="inline-flex rounded-full bg-blue-500/10 px-3 py-1 text-xs font-bold text-blue-400 border border-blue-500/20">⏳ Aberto</span>
                                 {% endif %}
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="flex justify-center items-center">
+                                    {% if emp.parcelas_pagas < emp.parcelas_totais %}
+                                        <a href="{% url 'registrar_pagamento_parcela' emp.pk %}" 
+                                           class="rounded-lg border border-indigo-500/30 bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-500 shadow-md shadow-indigo-600/10 active:scale-95 transition flex items-center gap-1"
+                                           title="Registrar pagamento de 1 parcela">
+                                           💵 Pagar Parcela
+                                        </a>
+                                    {% else %}
+                                        <span class="text-xs text-slate-500 italic">Totalmente Pago</span>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="p-12 text-center text-slate-500 italic bg-slate-900/20">
+                            <td colspan="7" class="p-12 text-center text-slate-500 italic bg-slate-900/20">
                                 Nenhum empréstimo lançado na sua conta até o momento.
                             </td>
                         </tr>

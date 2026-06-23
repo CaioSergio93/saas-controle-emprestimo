@@ -20,6 +20,7 @@ ALLOWED_HOSTS = [
     '.onrender.com',
     '127.0.0.1',
     'localhost',
+    'caio-servidor',
 ]
 
 
@@ -129,6 +130,7 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/admin/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/admin/login/'
+# Configurações de Redirecionamento de Login/Logout
+LOGIN_URL = '/login/'  # Ou o caminho exato da rota da sua tela de login customizada
+LOGIN_REDIRECT_URL = '/'  # Para onde o usuário vai após logar com sucesso (sua dashboard)
+LOGOUT_REDIRECT_URL = '/login/'  # Para onde o usuário vai após clicar em "Sair"
