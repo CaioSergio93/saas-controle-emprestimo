@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Card - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <nav class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">💳</span>
+                <span class="text-xl font-black bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">SaaS Card</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-semibold">{{ request.user.username }}</p>
+                    <p class="text-xs text-slate-400">Cliente SaaS</p>
+                </div>
+                <a href="/admin/logout/" class="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition">Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-8 flex-grow">
+        
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight">Visão Geral</h1>
+                <p class="text-slate-400 text-sm">Controle financeiro e monitoramento de parcelas em tempo real.</p>
+            </div>
+            <a href="/novo/" class="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow-lg shadow-indigo-600/30 hover:bg-indigo-500 active:scale-[0.98] transition flex items-center gap-2">
+                <span>➕</span> Novo Empréstimo
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
+                <p class="text-sm font-bold uppercase tracking-wide text-slate-400">Total Carteira</p>
+                <p class="text-3xl font-black text-white mt-2">R$ {{ total_carteira }}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl border-l-4 border-l-red-500">
+                <p class="text-sm font-bold uppercase tracking-wide text-slate-400">Total Faltante</p>
+                <p class="text-3xl font-black text-red-400 mt-2">R$ {{ total_faltante }}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl border-l-4 border-l-green-500">
+                <p class="text-sm font-bold uppercase tracking-wide text-slate-400">Registros Ativos</p>
+                <p class="text-3xl font-black text-green-400 mt-2">{{ emprestimos.count }}</p>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 bg-slate-900/80 text-xs font-bold uppercase tracking-wide text-slate-400">
+                            <th class="p-4">Cliente</th>
+                            <th class="p-4">Cartão</th>
+                            <th class="p-4">Valor Total</th>
+                            <th class="p-4">Valor Faltante</th>
+                            <th class="p-4">Progresso Parcelas</th>
+                            <th class="p-4 text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-sm text-slate-300">
+                        {% for emp in emprestimos %}
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-4 font-semibold text-white">{{ emp.cliente }}</td>
+                            <td class="p-4">
+                                <span class="rounded-lg bg-slate-800 border border-slate-700 px-2.5 py-1 text-xs font-bold text-indigo-400">
+                                    {{ emp.get_cartao_utilizado_display }}
+                                </span>
+                            </td>
+                            <td class="p-4 font-bold text-white">R$ {{ emp.valor_total }}</td>
+                            <td class="p-4 font-bold text-red-400">R$ {{ emp.valor_faltante }}</td>
+                            <td class="p-4">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs font-medium">{{ emp.parcelas_pagas }}/{{ emp.parcelas_totais }}</span>
+                                </div>
+                            </td>
+                            <td class="p-4 text-center">
+                                {% if emp.parcelas_faltantes <= 0 %}
+                                    <span class="inline-flex rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20">✅ Quitado</span>
+                                {% else %}
+                                    <span class="inline-flex rounded-full bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-400 border border-amber-500/20">⏳ Aberto</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="p-12 text-center text-slate-500 italic bg-slate-900/20">
+                                Nenhum empréstimo lançado na sua conta até o momento.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
