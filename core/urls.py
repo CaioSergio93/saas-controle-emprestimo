@@ -7,3 +7,5 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('novo/', views.criar_emprestimo, name='criar_emprestimo'), # Nova Rota adicionada!
 ]
+
+LOGOUT_REDIRECT_URL = '/admin/login/'
